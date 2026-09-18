@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shake Library</title>
+<style>
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+}
+body {
+  background: #080808;
+  color: white;
+}
+header {
+  padding: 22px 7%;
+  border-bottom: 1px solid #222;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.logo {
+  font-size: 24px;
+  font-weight: 900;
+}
+header span {
+  color: #777;
+}
+main {
+  width: 90%;
+  max-width: 1100px;
+  margin: auto;
+  padding: 50px 0;
+}
+.hero {
+  text-align: center;
+  padding: 40px 0 60px;
+}
+.hero h1 {
+  font-size: 55px;
+  font-weight: 900;
+}
+.hero p {
+  color: #777;
+  margin-top: 12px;
+}
+.categories {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 15px;
+}
+.category {
+  background: #111;
+  border: 1px solid #252525;
+  border-radius: 15px;
+  padding: 25px;
+  cursor: pointer;
+  transition: .2s;
+}
+.category:hover {
+  transform: translateY(-4px);
+  border-color: #555;
+}
+.category h2 {
+  font-size: 22px;
+  margin-bottom: 8px;
+}
+.category p {
+  color: #777;
+  font-size: 14px;
+}
+#library {
+  display: none;
+  margin-top: 50px;
+}
+.library-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+.back {
+  background: #171717;
+  color: white;
+  border: 1px solid #333;
+  padding: 10px 15px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+.shakes {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 15px;
+}
+.shake {
+  background: #111;
+  border: 1px solid #242424;
+  border-radius: 14px;
+  padding: 22px;
+  cursor: pointer;
+  transition: .2s;
+}
+.shake:hover {
+  transform: translateY(-3px);
+  border-color: #555;
+}
+.shake p {
+  color: #777;
+  margin-top: 8px;
+  font-size: 14px;
+}
+.details {
+  display: none;
+  margin-top: 50px;
+}
+.detail-box {
+  background: #101010;
+  border: 1px solid #292929;
+  border-radius: 16px;
+  padding: 25px;
+}
+.detail-box h2 {
+  margin-bottom: 8px;
+}
+.detail-box > p {
+  color: #777;
+  margin-bottom: 25px;
+}
+.keyframe {
+  background: #161616;
+  border: 1px solid #292929;
+  border-radius: 12px;
+  padding: 20px;
+  margin-top: 12px;
+}
+.keyframe h3 {
+  margin-bottom: 15px;
+}
+.settings {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+.setting {
+  background: #0b0b0b;
+  border-radius: 9px;
+  padding: 15px;
+}
+.setting small {
+  display: block;
+  color: #666;
+  margin-bottom: 5px;
+}
+.setting strong {
+  font-size: 20px;
+}
+@media(max-width:600px) {
+  .hero h1 {
+    font-size: 42px;
+  }
+  .settings {
+    grid-template-columns: 1fr;
+  }
+}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">EDIT<span>VAULT</span></div>
+</header>
+<main>
+  <div class="hero">
+    <h1>SHAKE LIBRARY</h1>
+    <p>Find shakes, CCS and good editing setups.</p>
+  </div>
+  <!-- CATEGORIES -->
+  <div class="categories" id="categories">
+    <div class="category" onclick="openCategory('shakes')">
+      <h2>SHAKES</h2>
+      <p>Normal shakes and different shake styles.</p>
+    </div>
+    <div class="category" onclick="openCategory('ccs')">
+      <h2>CCS</h2>
+      <p>Color correction and editing setups.</p>
+    </div>
+    <div class="category" onclick="openCategory('good')">
+      <h2>GOOD SHAKES</h2>
+      <p>Stronger shakes for harder edits.</p>
+    </div>
+  </div>
+  <!-- SHAKE LIBRARY -->
+  <div id="library">
+    <div class="library-header">
+      <h2 id="libraryTitle">SHAKES</h2>
+      <button class="back" onclick="goBack()">Back</button>
+    </div>
+    <div class="shakes" id="shakeList"></div>
+  </div>
+  <!-- SHAKE DETAILS -->
+  <div class="details" id="details">
+    <div class="detail-box">
+      <h2 id="shakeName">Normal Shake</h2>
+      <p id="shakeDescription">
+        Basic shake setup.
+      </p>
+      <div id="keyframes"></div>
+    </div>
+  </div>
+</main>
+<script>
+const data = {
+  shakes: [
+    {
+      name: "Normal Shake",
+      description: "A basic shake setup.",
+      keyframes: [
+        {
+          name: "Keyframe 1",
+          speed: "5",
+          intensity: "100"
+        },
+        {
+          name: "Keyframe 2",
+          speed: "0",
+          intensity: "0"
+        }
+      ]
+    },
+    {
+      name: "Small Shake",
+      description: "A lighter shake for clean edits.",
+      keyframes: [
+        {
+          name: "Keyframe 1",
+          speed: "3",
+          intensity: "50"
+        },
+        {
+          name: "Keyframe 2",
+          speed: "0",
+          intensity: "0"
+        }
+      ]
+    },
+    {
+      name: "Heavy Shake",
+      description: "A stronger shake for impacts.",
+      keyframes: [
+        {
+          name: "Keyframe 1",
+          speed: "8",
+          intensity: "150"
+        },
+        {
+          name: "Keyframe 2",
+          speed: "0",
+          intensity: "0"
+        }
+      ]
+    }
+  ],
+  ccs: [
+    {
+      name: "Clean CC",
+      description: "Simple clean color correction.",
+      keyframes: [
+        {
+          name: "CC Settings",
+          speed: "—",
+          intensity: "—"
+        }
+      ]
+    },
+    {
+      name: "Dark CC",
+      description: "Darker color setup.",
+      keyframes: [
+        {
+          name: "CC Settings",
+          speed: "—",
+          intensity: "—"
+        }
+      ]
+    }
+  ],
+  good: [
+    {
+      name: "Strong Shake",
+      description: "A stronger shake for beat drops.",
+      keyframes: [
+        {
+          name: "Keyframe 1",
+          speed: "10",
+          intensity: "200"
+        },
+        {
+          name: "Keyframe 2",
+          speed: "0",
+          intensity: "0"
+        }
+      ]
+    },
+    {
+      name: "Beat Shake",
+      description: "Made for hard beats.",
+      keyframes: [
+        {
+          name: "Keyframe 1",
+          speed: "7",
+          intensity: "175"
+        },
+        {
+          name: "Keyframe 2",
+          speed: "0",
+          intensity: "0"
+        }
+      ]
+    }
+  ]
+};
+function openCategory(category) {
+  document.getElementById("categories").style.display = "none";
+  document.getElementById("library").style.display = "block";
+  document.getElementById("details").style.display = "none";
+  const list = document.getElementById("shakeList");
+  list.innerHTML = "";
+  const title = document.getElementById("libraryTitle");
+  if (category === "shakes") {
+    title.innerText = "SHAKES";
+  }
+  if (category === "ccs") {
+    title.innerText = "CCS";
+  }
+  if (category === "good") {
+    title.innerText = "GOOD SHAKES";
+  }
+  data[category].forEach((shake, index) => {
+    const card = document.createElement("div");
+    card.className = "shake";
+    card.innerHTML = `
+      <h3>${shake.name}</h3>
+      <p>${shake.description}</p>
+    `;
+    card.onclick = function() {
+      openShake(category, index);
+    };
+    list.appendChild(card);
+  });
+}
+function openShake(category, index) {
+  const shake = data[category][index];
+  document.getElementById("library").style.display = "none";
+  document.getElementById("details").style.display = "block";
+  document.getElementById("shakeName").innerText = shake.name;
+  document.getElementById("shakeDescription").innerText =
+    shake.description;
+  const keyframes = document.getElementById("keyframes");
+  keyframes.innerHTML = "";
+  shake.keyframes.forEach(frame => {
+    const box = document.createElement("div");
+    box.className = "keyframe";
+    box.innerHTML = `
+      <h3>${frame.name}</h3>
+      <div class="settings">
+        <div class="setting">
+          <small>Speed</small>
+          <strong>${frame.speed}</strong>
+        </div>
+        <div class="setting">
+          <small>Intensity</small>
+          <strong>${frame.intensity}</strong>
+        </div>
+        <div class="setting">
+          <small>Position</small>
+          <strong>End</strong>
+        </div>
+      </div>
+    `;
+    keyframes.appendChild(box);
+  });
+}
+function goBack() {
+  document.getElementById("library").style.display = "none";
+  document.getElementById("details").style.display = "none";
+  document.getElementById("categories").style.display = "grid";
+}
+</script>
+</body>
+</html>
